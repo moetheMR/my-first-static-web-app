@@ -2,6 +2,27 @@ import React, { useEffect, useState } from 'react';
 
 function App() {
   const [name, setName] = useState(() => localStorage.getItem('name') || 'World');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMessage = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch('/api/message');
+      const data = await res.json();
+      setMessage(data.text || '');
+    } catch {
+      setError('Failed to load API message');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessage();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('name', name);
@@ -9,6 +30,7 @@ function App() {
 
   const container = { fontFamily: 'system-ui, sans-serif', padding: 16, lineHeight: 1.4 };
   const inputStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'block' };
+  const buttonStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'inline-block' };
 
   return (
     <div style={container}>
@@ -21,6 +43,15 @@ function App() {
         placeholder="Type your name"
         style={inputStyle}
       />
+      <div style={{ marginTop: 16 }}>
+        <h2>Message from API</h2>
+        <button onClick={fetchMessage} disabled={loading} style={buttonStyle}>
+          {loading ? 'Loading…' : 'Refresh'}
+        </button>
+        <p aria-live="polite" style={{ marginTop: 8 }}>
+          {error ? error : message}
+        </p>
+      </div>
     </div>
   );
 }
