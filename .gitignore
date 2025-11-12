@@ -10,11 +10,6 @@
 
 # production
 /build
-/api/node_modules
-/api/dist
-/api/out
-/api/bin
-/api/obj
 
 # misc
 .DS_Store
