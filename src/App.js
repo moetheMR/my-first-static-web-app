@@ -11,9 +11,11 @@ function App() {
       setLoading(true);
       setError(null);
       const res = await fetch('/api/message');
+      if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
-      setMessage(data.text || '');
-    } catch {
+      const text = data?.data?.text || data?.text || '';
+      setMessage(text);
+    } catch (e) {
       setError('Failed to load API message');
     } finally {
       setLoading(false);
