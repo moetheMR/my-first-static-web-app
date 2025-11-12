@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 function App() {
   const [name, setName] = useState(() => localStorage.getItem('name') || 'World');
@@ -6,23 +6,28 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMessage = async () => {
+  const fetchMessage = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const res = await fetch('/api/message');
+      if (!res.ok) {
+        throw new Error(`API request failed with status ${res.status}`);
+      }
       const data = await res.json();
-      setMessage(data.text || '');
-    } catch {
-      setError('Failed to load API message');
+      setMessage(data?.text || 'No message from the API.');
+    } catch (err) {
+      setError(err.message || 'Failed to load API message');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchMessage();
-  }, []);
+    // The dependency array includes fetchMessage.
+    // Thanks to useCallback, this effect will still only run once on mount.
+  }, [fetchMessage]);
 
   useEffect(() => {
     localStorage.setItem('name', name);
@@ -31,6 +36,10 @@ function App() {
   const container = { fontFamily: 'system-ui, sans-serif', padding: 16, lineHeight: 1.4 };
   const inputStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'block' };
   const buttonStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'inline-block' };
+
+const container = { fontFamily: 'system-ui, sans-serif', padding: 16, lineHeight: 1.4 };
+const inputStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'block' };
+const buttonStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'inline-block' };
 
   return (
     <div style={container}>
