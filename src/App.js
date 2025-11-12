@@ -33,10 +33,6 @@ function App() {
     localStorage.setItem('name', name);
   }, [name]);
 
-  const container = { fontFamily: 'system-ui, sans-serif', padding: 16, lineHeight: 1.4 };
-  const inputStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'block' };
-  const buttonStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'inline-block' };
-
 const container = { fontFamily: 'system-ui, sans-serif', padding: 16, lineHeight: 1.4 };
 const inputStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'block' };
 const buttonStyle = { padding: 8, fontSize: 16, marginTop: 8, display: 'inline-block' };
